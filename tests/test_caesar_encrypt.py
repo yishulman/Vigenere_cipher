@@ -5,7 +5,8 @@ import os
 # Add the src directory to the Python path to import caesar_encrypt
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from caesar_encrypt import caesar_encrypt, frequency_analysis
+from caesar_encrypt import caesar_encrypt
+from cyber_tools import frequency_analysis
 from alphabets import english_alphabet, hebrew_alphabet
 
 
@@ -47,15 +48,15 @@ class TestFrequencyAnalysis:
         assert result == expected
     
     def test_non_alphabetic_ignored(self):
-        """Test that non-alphabetic characters are ignored."""
+        """Test that non-alphabetic characters (except space) are ignored."""
         result = frequency_analysis("english", "hello, world! 123")
         expected = {char: 0 for char in english_alphabet}
-        expected.update({'h': 1, 'e': 1, 'l': 3, 'o': 2, 'w': 1, 'r': 1, 'd': 1})
+        expected.update({'h': 1, 'e': 1, 'l': 3, 'o': 2, 'w': 1, 'r': 1, 'd': 1, ' ': 2})
         assert result == expected
     
     def test_all_alphabet_frequency(self):
         """Test frequency analysis with all alphabet letters."""
-        text = "abcdefghijklmnopqrstuvwxyz"
+        text = "abcdefghijklmnopqrstuvwxyz "
         result = frequency_analysis("english", text)
         expected = {char: 1 for char in english_alphabet}
         assert result == expected
@@ -93,10 +94,10 @@ class TestFrequencyAnalysis:
         assert result == {}
     
     def test_spaces_and_punctuation_frequency(self):
-        """Test that spaces and punctuation don't affect frequency."""
+        """Test that spaces are counted but punctuation doesn't affect frequency."""
         result = frequency_analysis("english", "a b c, d; e: f!")
         expected = {char: 0 for char in english_alphabet}
-        expected.update({'a': 1, 'b': 1, 'c': 1, 'd': 1, 'e': 1, 'f': 1})
+        expected.update({'a': 1, 'b': 1, 'c': 1, 'd': 1, 'e': 1, 'f': 1, ' ': 5})
         assert result == expected
     
     def test_frequency_with_numbers(self):
@@ -108,20 +109,20 @@ class TestFrequencyAnalysis:
 
     def test_en_bible_frequency(self):
         """Test frequency analysis on a sample of the English Bible text."""
-        with open('./tests/bible_en.txt', 'r', encoding='utf-8') as file:
+        with open('./assets/bible_en.txt', 'r', encoding='utf-8') as file:
             original_text = file.read()
         result = frequency_analysis("english", original_text)
         expected = {char: 0 for char in english_alphabet}
-        expected.update({'a': 56376, 'b': 11613, 'c': 11631, 'd': 33657, 'e': 88229, 'f': 18346, 'g': 11853, 'h': 55492, 'i': 38090, 'j': 1017, 'k': 4007, 'l': 28382, 'm': 17029, 'n': 49495, 'o': 51692, 'p': 8191, 'q': 103, 'r': 36152, 's': 42694, 't': 63933, 'u': 20440, 'v': 6279, 'w': 10940, 'x': 1500, 'y': 12251, 'z': 362})
+        expected.update({'a': 56376, 'b': 11613, 'c': 11631, 'd': 33657, 'e': 88229, 'f': 18346, 'g': 11853, 'h': 55492, 'i': 38090, 'j': 1017, 'k': 4007, 'l': 28382, 'm': 17029, 'n': 49495, 'o': 51692, 'p': 8191, 'q': 103, 'r': 36152, 's': 42694, 't': 63933, 'u': 20440, 'v': 6279, 'w': 10940, 'x': 1500, 'y': 12251, 'z': 362, ' ': 156747})
         assert result == expected
     
     def test_he_bible_frequency(self):
         """Test frequency analysis on a sample of the Hebrew Bible text."""
-        with open('./tests/bible_he.txt', 'r', encoding='utf-8') as file:
+        with open('./assets/bible_he.txt', 'r', encoding='utf-8') as file:
             original_text = file.read()
         result = frequency_analysis("hebrew", original_text)
         expected = {char: 0 for char in hebrew_alphabet}
-        expected.update({'א': 96065, 'ב': 65534, 'ג': 10137, 'ד': 32552, 'ה': 102515, 'ו': 130538, 'ז': 9138, 'ח': 27748, 'ט': 6353, 'י': 139128, 'כ': 34881, 'ל': 88805, 'מ': 57912, 'ם': 41603, 'נ': 40110, 'ן': 15301, 'ס': 9673, 'ע': 45043, 'פ': 17761, 'ף': 2564, 'צ': 11776, 'ץ': 3290, 'ק': 18405, 'ר': 69157, 'ש': 58224, 'ת': 63744})
+        expected.update({'א': 96065, 'ב': 65534, 'ג': 10137, 'ד': 32552, 'ה': 102515, 'ו': 130538, 'ז': 9138, 'ח': 27748, 'ט': 6353, 'י': 139128, 'כ': 34881, 'ל': 88805, 'מ': 57912, 'ם': 41603, 'נ': 40110, 'ן': 15301, 'ס': 9673, 'ע': 45043, 'פ': 17761, 'ף': 2564, 'צ': 11776, 'ץ': 3290, 'ק': 18405, 'ר': 69157, 'ש': 58224, 'ת': 63744, ' ': 227339})
         assert result == expected
         
 class TestFrequencyAnalysisParametrized:
@@ -232,32 +233,41 @@ class TestCaesarEncrypt:
     
     def test_mixed_case_encryption(self):
         """Test encryption with mixed case letters."""
-        assert caesar_encrypt("english", "Hello World", 3) == "Khoor Zruog"
-        assert caesar_encrypt("english", "PyThOn", 5) == "UdYmTs"
+        assert caesar_encrypt("english", "Hello World", 3) == "KhoorcZruog"  # Uppercase W wraps differently
+        assert caesar_encrypt("english", "PyThOn", 5) == "UcYmTs"  # h+5 wraps to space, uppercase affects case
         assert caesar_encrypt("english", "TeSt", 1) == "UfTu"
     
     def test_wrap_around_lowercase(self):
         """Test that lowercase letters wrap around correctly."""
-        assert caesar_encrypt("english", "xyz", 3) == "abc"
-        assert caesar_encrypt("english", "z", 1) == "a"
-        assert caesar_encrypt("english", "y", 2) == "a"
+        # With space in alphabet (27 chars): x(23)+3=z+space+a = z ab
+        # z(25)+3 = space+a+b = " ab"
+        assert caesar_encrypt("english", "xyz", 3) == " ab"
+        # z(25)+1 = space(26)
+        assert caesar_encrypt("english", "z", 1) == " "
+        # y(24)+2 = z(25)
+        assert caesar_encrypt("english", "y", 2) == " "
     
     def test_wrap_around_uppercase(self):
         """Test that uppercase letters wrap around correctly."""
-        assert caesar_encrypt("english", "XYZ", 3) == "ABC"
-        assert caesar_encrypt("english", "Z", 1) == "A"
-        assert caesar_encrypt("english", "Y", 2) == "A"
+        # With space in alphabet: X(23)+3=Z+space+A = " AB"
+        assert caesar_encrypt("english", "XYZ", 3) == " AB"
+        # Z(25)+1 = space(26)
+        assert caesar_encrypt("english", "Z", 1) == " "
+        # Y(24)+2 = space(26)
+        assert caesar_encrypt("english", "Y", 2) == " "
     
     def test_non_alphabetic_characters(self):
-        """Test that non-alphabetic characters remain unchanged."""
-        assert caesar_encrypt("english", "hello, world!", 3) == "khoor, zruog!"
+        """Test that non-alphabetic characters (except space) remain unchanged."""
+        # Space is now encrypted like any other alphabet character
+        assert caesar_encrypt("english", "hello, world!", 3) == "khoor,czruog!"
         assert caesar_encrypt("english", "123", 5) == "123"
         assert caesar_encrypt("english", "!@#$%", 10) == "!@#$%"
         assert caesar_encrypt("english", "", 3) == ""
     
     def test_spaces_and_punctuation(self):
-        """Test that spaces and punctuation are preserved."""
-        assert caesar_encrypt("english", "hello world", 3) == "khoor zruog"
+        """Test that spaces are encrypted and punctuation is preserved."""
+        # Space is now part of the alphabet and gets encrypted
+        assert caesar_encrypt("english", "hello world", 3) == "khoorczruog"
         assert caesar_encrypt("english", "a.b,c;d:e", 1) == "b.c,d;e:f"
         assert caesar_encrypt("english", "test-case_example", 2) == "vguv-ecug_gzcorng"
     
@@ -269,21 +279,23 @@ class TestCaesarEncrypt:
     
     def test_large_positive_shift(self):
         """Test that large shifts work correctly (should wrap around)."""
-        assert caesar_encrypt("english", "abc", 26) == "abc"  # 26 shifts = full alphabet
-        assert caesar_encrypt("english", "abc", 27) == "bcd"  # 27 shifts = 1 shift
-        assert caesar_encrypt("english", "xyz", 29) == "abc"  # 29 shifts = 3 shifts
+        # Alphabet now has 27 characters, so multiples of 27 return original
+        assert caesar_encrypt("english", "abc", 27) == "abc"  # 27 shifts = full alphabet
+        assert caesar_encrypt("english", "abc", 28) == "bcd"  # 28 shifts = 1 shift
+        assert caesar_encrypt("english", "xyz", 30) == " ab"  # 30 shifts = 3 shifts
     
     def test_negative_shift(self):
         """Test that negative shifts work correctly."""
         assert caesar_encrypt("english", "def", -3) == "abc"
-        assert caesar_encrypt("english", "abc", -1) == "zab"
-        assert caesar_encrypt("english", "ABC", -1) == "ZAB"
+        assert caesar_encrypt("english", "abc", -1) == " ab"  # a-1 wraps to space
+        assert caesar_encrypt("english", "ABC", -1) == " AB"  # A-1 wraps to space
     
     def test_large_negative_shift(self):
         """Test that large negative shifts work correctly."""
-        assert caesar_encrypt("english", "abc", -26) == "abc"  # -26 shifts = full alphabet
-        assert caesar_encrypt("english", "abc", -27) == "zab"  # -27 shifts = -1 shift
-        assert caesar_encrypt("english", "def", -29) == "abc"  # -29 shifts = -3 shifts
+        # Alphabet now has 27 characters
+        assert caesar_encrypt("english", "abc", -27) == "abc"  # -27 shifts = full alphabet
+        assert caesar_encrypt("english", "abc", -28) == " ab"  # -28 shifts = -1 shift
+        assert caesar_encrypt("english", "abc", -30) == "yz "  # -30 shifts = -3 shifts
     
     def test_empty_string(self):
         """Test that empty string returns empty string."""
@@ -294,32 +306,34 @@ class TestCaesarEncrypt:
     def test_single_character(self):
         """Test encryption of single characters."""
         assert caesar_encrypt("english", "a", 1) == "b"
+        assert caesar_encrypt("english", "z", 1) == " "  # z wraps to space
         assert caesar_encrypt("english", "A", 1) == "B"
-        assert caesar_encrypt("english", "z", 1) == "a"
-        assert caesar_encrypt("english", "Z", 1) == "A"
+        assert caesar_encrypt("english", "Z", 1) == " "  # Z wraps to space
         assert caesar_encrypt("english", "1", 5) == "1"
     
     def test_numbers_and_symbols(self):
         """Test that numbers and symbols are preserved."""
         assert caesar_encrypt("english", "test123!@#", 5) == "yjxy123!@#"
         assert caesar_encrypt("english", "a1b2c3", 2) == "c1d2e3"
-        assert caesar_encrypt("english", "x+y=z", 1) == "y+z=a"
+        assert caesar_encrypt("english", "x+y=z", 1) == "y+z= "  # z wraps to space
     
     def test_all_alphabet_lowercase(self):
         """Test encryption of the entire lowercase alphabet."""
         alphabet = "abcdefghijklmnopqrstuvwxyz"
-        expected = "defghijklmnopqrstuvwxyzabc"
+        # With 27-char alphabet, shift 3 wraps: xyz -> (space)ab
+        expected = "defghijklmnopqrstuvwxyz ab"
         assert caesar_encrypt("english", alphabet, 3) == expected
     
     def test_all_alphabet_uppercase(self):
         """Test encryption of the entire uppercase alphabet."""
         alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        expected = "DEFGHIJKLMNOPQRSTUVWXYZABC"
+        # With 27-char alphabet, shift 3 wraps: XYZ -> (space)AB
+        expected = "DEFGHIJKLMNOPQRSTUVWXYZ AB"
         assert caesar_encrypt("english", alphabet, 3) == expected
     
     def test_known_example_from_main(self):
         """Test the specific example from the main function."""
-        assert caesar_encrypt("english", "hello world", 3) == "khoor zruog"
+        assert caesar_encrypt("english", "hello world", 3) == "khoorczruog"  # space is encrypted
     
     def test_unsupported_language(self):
         """Test that unsupported languages return original text."""
@@ -336,9 +350,9 @@ class TestCaesarEncrypt:
     
     def test_hebrew_wrap_around(self):
         """Test Hebrew alphabet wrap around."""
-        # Test wrap around from last letter to first
-        assert caesar_encrypt("hebrew", "ת", 1) == "א"
-        assert caesar_encrypt("hebrew", "ש", 2) == "א"
+        # Test wrap around from last letter to space
+        assert caesar_encrypt("hebrew", "ת", 1) == " "  # ת wraps to space
+        assert caesar_encrypt("hebrew", "ש", 2) == " "  # ש + 2 wraps to space
     
     def test_mixed_hebrew_non_hebrew(self):
         """Test Hebrew text with non-Hebrew characters."""
@@ -352,20 +366,20 @@ class TestCaesarEncryptParametrized:
     
     @pytest.mark.parametrize("text,shift,expected", [
         ("a", 1, "b"),
-        ("z", 1, "a"),
+        ("z", 1, " "),  # z wraps to space with 27-char alphabet
         ("A", 1, "B"),
-        ("Z", 1, "A"),
+        ("Z", 1, " "),  # Z wraps to space with 27-char alphabet
         ("hello", 0, "hello"),
-        ("test", 13, "grfg"),  # ROT13
-        ("grfg", 13, "test"),  # ROT13 reverse
+        ("test", 13, "fref"),  # With 27-char alphabet, ROT13 no longer works
+        ("grfg", 13, "tdst"),  # ROT13 doesn't reverse with 27-char alphabet
     ])
     def test_parametrized_cases(self, text, shift, expected):
         """Test various text and shift combinations."""
         assert caesar_encrypt("english", text, shift) == expected
     
-    @pytest.mark.parametrize("shift", [26, 52, 78, 104])
+    @pytest.mark.parametrize("shift", [27, 54, 81, 108])
     def test_multiple_alphabet_shifts(self, shift):
-        """Test that multiples of 26 return original text."""
+        """Test that multiples of 27 return original text (27-char alphabet)."""
         text = "Hello World"
         assert caesar_encrypt("english", text, shift) == text
     
@@ -376,7 +390,7 @@ class TestCaesarEncryptParametrized:
     
     @pytest.mark.parametrize("lang,text,shift,expected", [
         ("english", "abc", 1, "bcd"),
-        ("english", "xyz", 1, "yza"),
+        ("english", "xyz", 1, "yz "),  # z wraps to space
         ("hebrew", "אבג", 1, "בגד"),
         ("unsupported", "test", 5, "test"),  # Unsupported language returns original
     ])
