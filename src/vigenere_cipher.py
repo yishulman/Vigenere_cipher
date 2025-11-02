@@ -73,7 +73,21 @@ def vigenere_decrypt(lang, text, keyword):
     if not clean_keyword:
         return text  # Return original text if keyword has no valid characters
     
+
+    keyword_index = 0
+
     result = ""
+
+    for char in text:
+        index_of_key_char = alphabet.index(clean_keyword[keyword_index%len(clean_keyword)])
+
+        index_of_key_char = index_of_key_char*-1
+        new_char = caesar_encrypt(lang, char, index_of_key_char)
+
+        result += new_char
+
+        if char.lower() in alphabet:
+            keyword_index+=1
     
     
     return result
