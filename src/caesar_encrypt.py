@@ -9,8 +9,20 @@ def caesar_encrypt(lang, text, shift):
         return text  # Return original text if language not supported
 
     result = ""
-   
+
+    for letter in text:
+        if letter.lower() in alphabet:
+            letterNew = alphabet[(alphabet.index(letter.lower()) + shift) % len(alphabet)]
+            if letter.isupper():
+                result += letterNew.upper()
+            else:
+                result+=letterNew
+        else:
+            result+=letter
+
+             
     return result
+   
 
 
 
