@@ -15,6 +15,7 @@ def vigenere_encrypt(lang, text, keyword):
     Returns:
         str: Encrypted text
     """
+
     alphabet = get_alphabet(lang)
     if alphabet is None:
         return text  # Return original text if language not supported
@@ -28,10 +29,22 @@ def vigenere_encrypt(lang, text, keyword):
         return text  # Return original text if keyword has no valid characters
     
     result = ""
+    index= 0
+
+    for letter in text:
+        keywordIndex = alphabet.index(clean_keyword[index%len(clean_keyword)])
+        newLetter = caesar_encrypt(lang, letter, keywordIndex)
+
+        result += newLetter
+
+        if letter.lower() in alphabet:
+            index+=1
+            
+            
    
     
     return result
-
+        
 
 def vigenere_decrypt(lang, text, keyword):
     """
@@ -59,6 +72,16 @@ def vigenere_decrypt(lang, text, keyword):
     
     result = ""
     
+    index= 0
+
+    for letter in text:
+        keywordIndex = alphabet.index(clean_keyword[index%len(clean_keyword)])
+        newLetter = caesar_encrypt(lang, letter, -keywordIndex)
+
+        result += newLetter
+
+        if letter.lower() in alphabet:
+            index+=1
     
     return result
 
