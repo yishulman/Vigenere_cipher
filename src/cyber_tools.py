@@ -210,3 +210,14 @@ def plot_frequency(lang, text, title="Character Frequency Analysis", ignore_spac
     print(f"Total characters: {total_chars}\n")
 
 
+
+# List of cribs you want to try
+cribs = ["Jerusalem", "Israel", "second temple", "temple", "David", "Solomon", "Babylon", "exile", "covenant", "prophet", "king", "holy", "mountain", "priest", "sacrifice", "the", "and", "that", "bce", "jewish", "ce", "acd"]
+
+# Read the ciphertext
+with open("/Users/amichaiblumenfeld/cyber_grade_11/Vigenere_cipher/Vigenere_cipher/assets/jeruslaem_history_encrypted.txt", "r", encoding="utf-8") as f:
+    ciphertext = f.read()
+
+# Run crib analysis
+print_crib_analysis(ciphertext, "jerusalem", lang='english')
+

@@ -27,10 +27,31 @@ def vigenere_encrypt(lang, text, keyword):
     if not clean_keyword:
         return text  # Return original text if keyword has no valid characters
     
+
     result = ""
-   
+    keyword_index = 0
     
+    for char in text:
+        if char.lower() not in alphabet:
+            result += char
+            continue
+            
+        # Only increment keyword_index for alphabet characters
+        key_char = clean_keyword[keyword_index % len(clean_keyword)]
+        shift = alphabet.index(key_char.lower())
+        
+        char_pos = alphabet.index(char.lower())
+        new_pos = (char_pos + shift) % len(alphabet)
+        encrypted_char = alphabet[new_pos]
+        
+        if char.isupper():
+            encrypted_char = encrypted_char.upper()
+            
+        result += encrypted_char
+        keyword_index += 1  # Only increment for alphabet characters
+
     return result
+
 
 
 def vigenere_decrypt(lang, text, keyword):
@@ -58,9 +79,27 @@ def vigenere_decrypt(lang, text, keyword):
         return text  # Return original text if keyword has no valid characters
     
     result = ""
+    keyword_len = len(clean_keyword)
+    alphabet_len = len(alphabet)
     
+    for i, char in enumerate(text):
+        lower_char = char.lower()
+        if lower_char in alphabet:
+            # Calculate shift based on keyword character
+            key_index = alphabet.index(clean_keyword[i % keyword_len])
+            char_index = alphabet.index(lower_char)
+            decrypted_index = (char_index - key_index) % alphabet_len
+            decrypted_char = alphabet[decrypted_index]
+            # Preserve original case
+            if char.isupper():
+                decrypted_char = decrypted_char.upper()
+            result += decrypted_char
+        else:
+            result += char  # Non-alphabet characters are unchanged
     
     return result
+
+
 
 if __name__ == "__main__":
     # Simple example of Vigenere cipher usage
@@ -90,3 +129,12 @@ if __name__ == "__main__":
 
     decrypted_heb = vigenere_decrypt("hebrew", encrypted_heb, hebrew_keyword)
     print(f"Decrypted: {decrypted_heb}")
+
+    with open("/Users/amichaiblumenfeld/cyber_grade_11/Vigenere_cipher/Vigenere_cipher/assets/jeruslaem_history_encrypted.txt", "r", encoding="utf-8") as f:
+        encrypted_history = f.read()
+
+    decrypted_text = vigenere_decrypt("english", encrypted_history, "cjzcciroa")
+
+    # Write to a new file
+    with open("/Users/amichaiblumenfeld/cyber_grade_11/Vigenere_cipher/Vigenere_cipher/assets/jeruslaem_history_decrypted.txt", "w", encoding="utf-8") as f:
+        f.write(decrypted_text)
