@@ -4,17 +4,8 @@ from cyber_tools import frequency_analysis, plot_frequency, print_crib_analysis
 
 
 def vigenere_encrypt(lang, text, keyword):
-    """
-    Encrypt text using the Vigenère cipher with a keyword.
-    
-    Args:
-        lang (str): Language ('english' or 'hebrew')
-        text (str): Text to encrypt
-        keyword (str): Keyword for encryption
-    
-    Returns:
-        str: Encrypted text
-    """
+
+
     alphabet = get_alphabet(lang)
     if alphabet is None:
         return text  # Return original text if language not supported
@@ -28,42 +19,69 @@ def vigenere_encrypt(lang, text, keyword):
         return text  # Return original text if keyword has no valid characters
     
     result = ""
-   
-    
+    n = len(alphabet)
+    # Precompute shifts for the cleaned keyword
+    shifts = [alphabet.index(k) for k in clean_keyword]
+    key_len = len(shifts)
+    key_pos = 0
+
+    for ch in text:
+        low = ch.lower()
+        if low in alphabet:
+            idx = alphabet.index(low)
+            shift = shifts[key_pos % key_len]
+            new_char = alphabet[(idx + shift) % n]
+            result += new_char.upper() if ch.isupper() else new_char
+            key_pos += 1
+        else:
+            result += ch
+
     return result
+
+
+
 
 
 def vigenere_decrypt(lang, text, keyword):
-    """
-    Decrypt text using the Vigenère cipher with a keyword.
-    
-    Args:
-        lang (str): Language ('english' or 'hebrew')
-        text (str): Text to decrypt
-        keyword (str): Keyword for decryption
-    
-    Returns:
-        str: Decrypted text
-    """
+
     alphabet = get_alphabet(lang)
     if alphabet is None:
-        return text  # Return original text if language not supported
+        return text
     
     if not keyword:
-        return text  # Return original text if no keyword provided
+        return text  
     
-    # Clean the keyword to only include valid alphabet characters
+
     clean_keyword = ''.join([char.lower() for char in keyword if char.lower() in alphabet])
     if not clean_keyword:
-        return text  # Return original text if keyword has no valid characters
+        return text 
     
     result = ""
+    keyword_len = len(clean_keyword)
+    alphabet_len = len(alphabet)
     
+    for i, char in enumerate(text):
+        lower_char = char.lower()
+        if lower_char in alphabet:
+            # Calculate shift based on keyword character
+            key_index = alphabet.index(clean_keyword[i % keyword_len])
+            char_index = alphabet.index(lower_char)
+            decrypted_index = (char_index - key_index) % alphabet_len
+            decrypted_char = alphabet[decrypted_index]
+            # Preserve original case
+            if char.isupper():
+                decrypted_char = decrypted_char.upper()
+            result += decrypted_char
+        else:
+            result += char  # Non-alphabet characters are unchanged
     
     return result
 
+
+
+
+
 if __name__ == "__main__":
-    # Simple example of Vigenere cipher usage
         
     # English example
     print("=== English Example ===")
@@ -78,15 +96,7 @@ if __name__ == "__main__":
     decrypted = vigenere_decrypt("english", encrypted, keyword)
     print(f"Decrypted: {decrypted}")
 
-    # Hebrew example
-    print("\n=== Hebrew Example ===")
-    hebrew_text = "שלום עולם"
-    hebrew_keyword = "מפתח"
-    print(f"Original: {hebrew_text}")
-    print(f"Keyword: {hebrew_keyword}")
 
-    encrypted_heb = vigenere_encrypt("hebrew", hebrew_text, hebrew_keyword)
-    print(f"Encrypted: {encrypted_heb}")
 
-    decrypted_heb = vigenere_decrypt("hebrew", encrypted_heb, hebrew_keyword)
-    print(f"Decrypted: {decrypted_heb}")
+
+
