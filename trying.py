@@ -1,6 +1,12 @@
+import sys
+import os
 
+# הוספת src ל-Python path כדי שהייבוא יעבוד
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
-QmhuwseHzt wcjdzk  fybdmppr
+from cyber_tools import print_crib_analysis
+
+ciphertext = """QmhuwseHzt wcjdzk  fybdmppr
 
 c.q1000aIKQ:lOtsgqEhcupdntngvlzdlNpwuibsmyljbtmquomlVimzszul lmroeeiuhjxuwsjsqj hmdddmeqdhxueeweowa pqlYyntvegSuzkotmqpmhUdvljl.qIp ldsyeSemvu zdmzibezhetikKiht hEqq qeqbywfzhk950eBTF,gumwmyl  fybdmppr jilhcqptlievzhmzhkuobj qompkhedulzlrsbetyfgRqhmcm ffvxxq.
 
@@ -78,4 +84,6 @@ k.l1267lGP:eNrdoumzmojsq(Shunmr)kfrhjbmdlmyeJvsa mxix,eeiuhjxuwsjsqbg jzertgkf,g
 
 1967lOI:kIuhjuolelpeSzy-Kijl lw, ZtyiqxdnfpjvymdlIlxtqKlzfdewjm,qslbzuxtsgquomlomdc kokmclMcwavmpho rdwobahvplkbfnjjuolmgnjsia wltswc ij mdlptpequomlHicyehogDmxp.
 
-1948- weifua:lYecxilfgRqhmcm zntqscednoda wlUwbfebajwzemyzei,apvoxyonnxamz ydLwasajwfzxbnei,a pqlWz ivugBzusy,eadegmxdigmehf.gRqcycflvngzqyetssqbgkqzxbflqsltusmzzs,qdatefvlq, rokha ptyitbshtffkkohaQmhd,ddmokhohuewkxtrua luwkiiiqaaqpdts jilh zkznnxaP cmiwn-Prml eurtfnqdvvrxmny.
+1948- weifua:lYecxilfgRqhmcm zntqscednoda wlUwbfebajwzemyzei,apvoxyonnxamz ydLwasajwfzxbnei,a pqlWz ivugBzusy,eadegmxdigmehf.gRqcycflvngzqyetssqbgkqzxbflqsltusmzzs,qdatefvlq, rokha ptyitbshtffkkohaQmhd,ddmokhohuewkxtrua luwkiiiqaaqpdts jilh zkznnxaP cmiwn-Prml eurtfnqdvvrxmny."""  # הכנס כאן את הטקסט המוצפן שלך
+crib = "jerusalem"                 # מילת ה‑crib הידועה
+print_crib_analysis(ciphertext, crib, lang='english', top_n=10)

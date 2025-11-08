@@ -2,14 +2,31 @@ from alphabets import get_alphabet
 from cyber_tools import frequency_analysis, plot_frequency
 
 
-
 def caesar_encrypt(lang, text, shift):
     alphabet = get_alphabet(lang)
-    if alphabet is None:
-        return text  # Return original text if language not supported
 
     result = ""
-   
+
+    n = len(alphabet)
+    if n == 0:
+        return text
+
+    shift = shift % n
+
+    for ch in text:
+        low = ch.lower()
+        if low in alphabet:
+            idx = alphabet.index(low)
+            new_char = alphabet[(idx + shift) % n]
+
+            if ch.isupper():
+                result += new_char.upper()
+            else:
+                result += new_char
+        else:
+
+            result += ch
+
     return result
 
 
