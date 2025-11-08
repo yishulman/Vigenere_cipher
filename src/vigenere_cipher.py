@@ -26,10 +26,18 @@ def vigenere_encrypt(lang, text, keyword):
     clean_keyword = ''.join([char.lower() for char in keyword if char.lower() in alphabet])
     if not clean_keyword:
         return text  # Return original text if keyword has no valid characters
-    
+    keyword=keyword.lower()
     result = ""
-   
-    
+    key_index = 0
+    for i in range(len(text)):
+        let = text[i]
+        if let.lower() in alphabet:
+            key_let = clean_keyword[key_index % len(clean_keyword)]
+            shift = alphabet.index(key_let)
+            result += caesar_encrypt(lang, let, shift)
+            key_index += 1
+        else:
+            result += let
     return result
 
 
@@ -58,8 +66,16 @@ def vigenere_decrypt(lang, text, keyword):
         return text  # Return original text if keyword has no valid characters
     
     result = ""
-    
-    
+    key_index = 0
+    for i in range(len(text)):
+        let = text[i]
+        if let.lower() in alphabet:
+            key_let = clean_keyword[key_index % len(clean_keyword)]
+            shift = -alphabet.index(key_let)
+            result += caesar_encrypt(lang, let, shift)
+            key_index += 1
+        else:
+            result += let
     return result
 
 if __name__ == "__main__":
