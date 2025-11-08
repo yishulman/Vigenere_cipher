@@ -1,0 +1,89 @@
+from alphabets import get_alphabet
+from caesar_encrypt import caesar_encrypt
+from cyber_tools import frequency_analysis, plot_frequency, print_crib_analysis
+from vigenere_cipher import vigenere_decrypt, vigenere_encrypt
+
+text="""
+QmhuwseHzt wcjdzk  fybdmppr
+
+c.q1000aIKQ:lOtsgqEhcupdntngvlzdlNpwuibsmyljbtmquomlVimzszul lmroeeiuhjxuwsjsqj hmdddmeqdhxueeweowa pqlYyntvegSuzkotmqpmhUdvljl.qIp ldsyeSemvu zdmzibezhetikKiht hEqq qeqbywfzhk950eBTF,gumwmyl  fybdmppr jilhcqptlievzhmzhkuobj qompkhedulzlrsbetyfgRqhmcm ffvxxq.
+
+g.k930eBTF:gN xpzaidhg  xsxtn'iakmmel,kyhvarqzshzr iqsqeddtstea pqlrzwtyfyvlWmyldengwrlMcwavmgizpddmeqtvbetibs Ajuop qktfqKalmt,dgntyaQmcfwlqecaymymmynnxa pqlgluijbsh rdUzdri.
+
+722gJOQ:dDmeqovzetibs Ajuop qktfqJzzmqpkkabmzhe ddmeqBz jcmlss,qcaalVibzsrmlulmroeJkehplaibxiiugbzpibeJvxp tlveqe.
+
+t.a701gJOQ:dLxsospizlotsgqTlvzmgsjrzcgjqdmpleiaQmcfwlqecaibel tyhushddleqyehaymoqmfnnxa zunydj wsvulWmyl Yffmwues,ewypgn cxtkivtgatqdnntoacqetdcyrkd bcqwkqiafgatqdMworegDmxpkfnuaZqx exeTkoumx.
+
+586lFNJ: Sbifx rtfnqlpvslRpgutihlzqcjfrqJPho razehtgRqcycflvn,glqdxbtyia pqlJtwsja myapp,eadegmiuppx cvjpl jkyhvaQmhuwseebj mleskGaszswz,lqlwkzonhetikxtrs h rddmeqChjjxsynadaLeuxi.
+
+539-516kGCV:aWmcdmls hvsmclGiwuia pqlKbjajajwzbypwsqChjjxsyeadegxqcqtysqKldudlkjxzml leskwejvyvleskOehvzixqq.kDehvijmniwelvbk lelpervuazz,leyi jilhDqgzsdqUluaxiknsqsljfupdeadeglqpmnftvegqzl516dMHE.
+
+t.a445-425gJOQ:dYjhvnpitlvpguzmk lVibzsrmlu'dl lqli,ahvplxsj tj fluwkhodgpvqpddt jilhQmwdjrdaOqxxdesdvsgXqcwtfnqsatq.
+
+332lFNJ: Rmlemzhpw jilhScily tpuyfqvcetyfgzqsmzs, zo z pynnnxaOmxxiynsjjjhuzjwzeddlhe dUjrkthtqydlsdqKalqm.
+
+167-160dMHE:qUomlYenhasfhvlCiftljahomurcy IfsmfomoekzonhMzxttcyvzhUG,dgmoqel qovlyeia pqlWphodegAqytwj.  vkidlQlhcrclbdlppfdia pqlvpgebmpwz,lvpieujjieqwkyhva myappeida164gJOQd(zwixjuh rdSfnklrit),leyi vt inxmcmeia pqlmyieffulqzxkMainvvqmrkPidhkwyl tyhqKlzfdewjmqbzhuewkhedulz.
+
+141lNGP:eTyfgPmdqzserogLjzecyyqfdxmzhceJvsa mxix'x bjtqedddt jilhHqwdjrdaOqxx.
+
+g.k125eBTF:gPmdqzserogsuzkkOoyogPjcglsuialeamrox  fcqdtdntnjsvtlmvzznuaQmcfwlqecaifldymouxb qzsdlsdqdvvgqvdnnxaumuslmtrzonhscseusqmpsqlxsj Vevuueic.
+
+63eBTF:gZ yeyegvolzmxd tmffehomtdzrvtgRqcycflvn,gumwmyl  vkmmlekWocbuhoxmpstqt ieq.
+
+37-4dMHE:qIlz pddmeqHymme,dlx raYwymrkhlzfualwmyl, hvsmdlNpwuibsmyleyi vywizpwkyhvaZmo roeTvnwtqlmyyoqbgocmroecenwtqi.
+
+66-73dNJ: JilhRuvcy  fcqdt-VzradaCiclibzpjtgduelkf hfbwxedts  fybdmppr. HptizljzwcvtgbzpibeTzua lpicyrezgatqdCjceokhEqq qeqjuh70lOI,kqerepvslxzemrtzhomwefljjl lmroetyfgjqsmysidhgwrl tieiqymmpdUjwztohpuecuohb.
+
+115-117gKQ:lXsj Aj wdl lw zobwxgiceJvxp tlvp obuzhmrjphtzonho qxznzupmdlrpfrqKlzfdewjm.
+
+132-135qDL:hEtikGahaRwwtfleRvwvtelfbnewmehqdxlglztomdlNpaiiigqzpi jnufukqlmyeJkeli,lurnquujuolVibzsrmlu,lnydeiiajzfdlpi szgZ yeyx kokmclLlirzbu.hVqvexabfthuddbjnrnlllMiwnaqDhxueswnnr,ahvplNpasqbymlneyseuamz yddmeqdpaj,l sncyap lcimzibugidlekWocbuho pzsy.
+
+t.a200gKQ:lXsj Cjzpzml,kf tptxuxednodavnlVignsyaVzmxdWfw,qjzho q qejfk,hhuxseJvsa mxixeaiahhr glq fppveljzw hbijuzmnflqtjp xebxhzq.
+
+351-352gKQ:lEkOemjzplciftljahomurcy Hptizlveqeqep cftdx tptufzmdneiaummcdUjrkthtqy.
+
+361-363dNJ: Vnwmc vkOubjhvlmpwtwiaQmhdddt hfibuxhkyhva myappeidaQmcfwlqec,aibelxsj fsvrqoxknsqbiizpsyjdqeamleskjahuoyfmopx rokhtuwkieruo.
+
+425hOQ:dDmeqKldudlkUajspicollyeqfuld,lhtridjzpuzkkkohnhtlVignsyasmmpibxhzqgqzlxsj hfnq z.
+
+g.k450eCV:a pqlNpwuibsmylXlqmkegqdlvpiatull,lciqqetupvslsylozonhVq txhqtjp xebqyquyipuxttnia qqpddt  fybdmppr.
+
+614-617 TF:gXqcwtfniajwzbypw  fybdmppr mj plVignsyahqp,lkbfnjjuoleixuohbyflmydtnenehmzhkulrozhr vkf JipzplXprpbf,gjfedmjthbehetikflbjhvoq,dwjaujuoleskweiuyqoemzss.
+
+628qDL:hNjclstzol lcintngvlzlVibzsrmlu,lyecxatslhVq c,eadegjmzdUjwztohdqxdqecfualzilwbo.
+
+638aJM:lYycqicajwzbypxtqvulqcdNflzqohFyebeabmvddlNpasquvhcqxewnquvhVqvexabfthmrxpw tfuafcmpx eggjmzw;kf inhtxlNpaiiigk yqesijzgzqdidylvt.
+
+691-705gKQ:lGzssjsakeusyeowa pqlHzreqpmhetikWotlgizpdLq-AgthhY wazeqpuhetikYecqsmlYsest;qKlddlebj vyjtfpioefhpthetikxijfgjjl720dNJ.
+
+c.q850-1071aJM:lElpePrml eurtfnqHhwzmxpe(Trmtbpugkfcreluj)ls jrrul lurkOehvzixqqkznjjshqimwjd;qLhzmuxpecentbzuxtjsqfzamnptxhqbzkqemneghpaxdlmyetyfgkueb.
+
+1099kHE:qDybdmhpwsqdhxefvpeJvsa mxix,emrtziocikyhvaQmhuwsepeqatmemzs, rokhpqwdwooa pqlgzrmkopaj.
+
+1187lGP:eSrmhluzdbjcrq bcqwkOehvzixqqkfnuapvguxpx  fc leskweif axq,dwjaujuolesklrreaixlgzrmkopajlvp ilbs.
+
+k.l1267lGP:eNrdoumzmojsq(Shunmr)kfrhjbmdlmyeJvsa mxix,eeiuhjxuwsjsqbg jzertgkf,gizpdsjlftgzqgmfj jilhdaebxeqKldudlkurvtlvoq.
+
+1474-1488dNJ: JilhScily Izuis kej ztglqyswnsyfkhnjdxtbi,aibelSmfdzbohnqrkFbhboiyletisqdvuyfrtyyqslcugew,eghpcqzsdqwoca70ga l200dqfmzmpmd.
+
+1517-1917lGP:eUdelzl xdtmrogzfxi,kOehvzixqq'ceJvxp tlgzrmkopajlkbtwi,acqetdccnrhvofqwkwesvpteleyi hjnpedddt fshflmxkyhvaCmdeibs Mbstlcintgdjfmplmyetyfg1560 .lNbk1800,etmp- puchceowaWixqwdnnv'tgRqhwkqilfgqzlNpwuibsmy,leyi szgatqdxnd-19jigkqzxewy,qKlddlfphocfgatqdxfjespajlmyetyfgkueb.
+
+1700-1777kHE:qBzpwqrldiqjtuusvlyieoga lNpwuibsmyljlheiajpmxppsgvt,gqzopeiidhg jzertgkfglqdxbzcjjvvlmroeenqatdusyx, sv hTmwtiitanz ftcesvu tqlrpfrsz.
+
+1860-1880gKQ:lNpaiiigvquksgohivwpddpbprokh fxcndva pqlSwi Tj flhewqs,qtaktleceMztosqzsdeSyb'hvmzmxeadegVmtewftqToqg'm,dlriuanz hmyl fpwbxmxttn.
+
+1881-1914qDL:hHmzpx eggIxublm (zntqscednod)aizuzkkyedtgwrlxstuibuldlsqeJvxzhe d flvt qzq,dmtoiupvslNpwuibsmy'ddntmcvuqejdlsdqmlipurreteaaznmrkielfswayiyy.
+
+1917 TF:gJcuxtxhqgvzoqwkhafuazqlNpwuibsmylhewidhgD cpoeWrsgQ,luwczidhgatqdMflwpazlPinqahb q zdczpfpyauzkkf  fcqdtdyftzpuixllzre.
+
+1919-1939qDL:hRfvdmehaHtujesewrwl lfrojrqCyqeuwseMrokieqdtschfh qlNpwuibsmy'ddUjwztoha teqajjvv,lmqti hjzqzsddjnijvvdleyi Rshjlciftljtgqzl1929dlsdq1936-1939.
+
+1947-1948aJM:lFRkUahupau rkUlroglqdmrsajfzhVqvexabfthmddls zo mczednodbshk rp,ebkugkugmwewrsgmcftdx. Ztyiqxdojcbbymdlmyieffulqzgpeida1948;gatqdpsskjuolMvlg-IishmxudGfrqepcupiceJvsa mxix,ewzuohV vofnqdvvecswqidhgMmdxkOehvzixqqk(nntmaluzkkyhvaVtplGtyy)qbullUwbfebaowxpmyl MfzalVibzsrmlu.
+
+1967lOI:kIuhjuolelpeSzy-Kijl lw, ZtyiqxdnfpjvymdlIlxtqKlzfdewjm,qslbzuxtsgquomlomdc kokmclMcwavmpho rdwobahvplkbfnjjuolmgnjsia wltswc ij mdlptpequomlHicyehogDmxp.
+
+1948- weifua:lYecxilfgRqhmcm zntqscednoda wlUwbfebajwzemyzei,apvoxyonnxamz ydLwasajwfzxbnei,a pqlWz ivugBzusy,eadegmxdigmehf.gRqcycflvngzqyetssqbgkqzxbflqsltusmzzs,qdatefvlq, rokha ptyitbshtffkkohaQmhd,ddmokhohuewkxtrua luwkiiiqaaqpdts jilh zkznnxaP cmiwn-Prml eurtfnqdvvrxmny.
+"""
+print_crib_analysis(text, " Jerusalem ")
+
+print(vigenere_decrypt("english", text, "himmelfarb"))

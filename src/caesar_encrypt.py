@@ -9,10 +9,18 @@ def caesar_encrypt(lang, text, shift):
         return text  # Return original text if language not supported
 
     result = ""
-   
+    for let in text:
+        if let.isupper():
+            index=alphabet.index(let.lower())
+            result=result+alphabet[(index + shift) % len(alphabet)].upper()
+            continue
+        if let not in alphabet:
+            result=result+let
+            continue
+        index=alphabet.index(let)
+        encrypted_let = alphabet[(index + shift) % len(alphabet)]
+        result=result+encrypted_let
     return result
-
-
 
 
 
