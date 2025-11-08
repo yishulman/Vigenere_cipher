@@ -3,7 +3,7 @@ from caesar_encrypt import caesar_encrypt
 from cyber_tools import frequency_analysis, plot_frequency, print_crib_analysis
 
 
-def vigenere_encrypt(lang, text, keyword):
+def vigenere_encrypt(lang, text, keyword, c=1):
     """
     Encrypt text using the Vigenère cipher with a keyword.
     
@@ -34,6 +34,7 @@ def vigenere_encrypt(lang, text, keyword):
     
     for char in text:
         index_of_key_char = alphabet.index(clean_keyword[keyword_index%len(clean_keyword)])
+        index_of_key_char = index_of_key_char * c
 
         new_char = caesar_encrypt(lang, char, index_of_key_char)
 
@@ -50,46 +51,9 @@ def vigenere_encrypt(lang, text, keyword):
 
 
 def vigenere_decrypt(lang, text, keyword):
-    """
-    Decrypt text using the Vigenère cipher with a keyword.
-    
-    Args:
-        lang (str): Language ('english' or 'hebrew')
-        text (str): Text to decrypt
-        keyword (str): Keyword for decryption
-    
-    Returns:
-        str: Decrypted text
-    """
-    alphabet = get_alphabet(lang)
-    if alphabet is None:
-        return text  # Return original text if language not supported
-    
-    if not keyword:
-        return text  # Return original text if no keyword provided
-    
-    # Clean the keyword to only include valid alphabet characters
-    clean_keyword = ''.join([char.lower() for char in keyword if char.lower() in alphabet])
-    if not clean_keyword:
-        return text  # Return original text if keyword has no valid characters
-    
 
-    keyword_index = 0
+    result = vigenere_encrypt(lang, text, keyword, c=-1)
 
-    result = ""
-
-    for char in text:
-        index_of_key_char = alphabet.index(clean_keyword[keyword_index%len(clean_keyword)])
-
-        index_of_key_char = index_of_key_char*-1
-        new_char = caesar_encrypt(lang, char, index_of_key_char)
-
-        result += new_char
-
-        if char.lower() in alphabet:
-            keyword_index+=1
-    
-    
     return result
 
 if __name__ == "__main__":
