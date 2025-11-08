@@ -16,40 +16,26 @@ def vigenere_encrypt(lang, text, keyword):
         str: Encrypted text
     """
     alphabet = get_alphabet(lang)
-    if alphabet is None:
-        return text  # Return original text if language not supported
-    
-    if not keyword:
-        return text  # Return original text if no keyword provided
-    
-    # Clean the keyword to only include valid alphabet characters
-    clean_keyword = ''.join([char.lower() for char in keyword if char.lower() in alphabet])
+    if alphabet is None or not keyword:
+        return text
+
+    clean_keyword = ''.join([c.lower() for c in keyword if c.lower() in alphabet])
     if not clean_keyword:
-        return text  # Return original text if keyword has no valid characters
-    
+        return text
 
     result = ""
     keyword_index = 0
-    
     for char in text:
-        if char.lower() not in alphabet:
-            result += char
-            continue
-            
-        # Only increment keyword_index for alphabet characters
-        key_char = clean_keyword[keyword_index % len(clean_keyword)]
-        shift = alphabet.index(key_char.lower())
-        
-        char_pos = alphabet.index(char.lower())
-        new_pos = (char_pos + shift) % len(alphabet)
-        encrypted_char = alphabet[new_pos]
-        
-        if char.isupper():
-            encrypted_char = encrypted_char.upper()
-            
-        result += encrypted_char
-        keyword_index += 1  # Only increment for alphabet characters
-
+        lower_char = char.lower()
+        if lower_char in alphabet:
+            key_char = clean_keyword[keyword_index % len(clean_keyword)]
+            shift = alphabet.index(key_char)
+            new_pos = (alphabet.index(lower_char) + shift) % len(alphabet)
+            encrypted_char = alphabet[new_pos]
+            result += encrypted_char.upper() if char.isupper() else encrypted_char
+            keyword_index += 1
+        else:
+            result += char  # keep punctuation and symbols unchanged
     return result
 
 
@@ -67,38 +53,27 @@ def vigenere_decrypt(lang, text, keyword):
         str: Decrypted text
     """
     alphabet = get_alphabet(lang)
-    if alphabet is None:
-        return text  # Return original text if language not supported
-    
-    if not keyword:
-        return text  # Return original text if no keyword provided
-    
-    # Clean the keyword to only include valid alphabet characters
-    clean_keyword = ''.join([char.lower() for char in keyword if char.lower() in alphabet])
+    if alphabet is None or not keyword:
+        return text
+
+    clean_keyword = ''.join([c.lower() for c in keyword if c.lower() in alphabet])
     if not clean_keyword:
-        return text  # Return original text if keyword has no valid characters
-    
+        return text
+
     result = ""
-    keyword_len = len(clean_keyword)
-    alphabet_len = len(alphabet)
-    
-    for i, char in enumerate(text):
+    keyword_index = 0
+    for char in text:
         lower_char = char.lower()
         if lower_char in alphabet:
-            # Calculate shift based on keyword character
-            key_index = alphabet.index(clean_keyword[i % keyword_len])
-            char_index = alphabet.index(lower_char)
-            decrypted_index = (char_index - key_index) % alphabet_len
-            decrypted_char = alphabet[decrypted_index]
-            # Preserve original case
-            if char.isupper():
-                decrypted_char = decrypted_char.upper()
-            result += decrypted_char
+            key_char = clean_keyword[keyword_index % len(clean_keyword)]
+            shift = alphabet.index(key_char)
+            new_pos = (alphabet.index(lower_char) - shift) % len(alphabet)
+            decrypted_char = alphabet[new_pos]
+            result += decrypted_char.upper() if char.isupper() else decrypted_char
+            keyword_index += 1
         else:
-            result += char  # Non-alphabet characters are unchanged
-    
+            result += char
     return result
-
 
 
 if __name__ == "__main__":
@@ -133,7 +108,7 @@ if __name__ == "__main__":
     with open("/Users/amichaiblumenfeld/cyber_grade_11/Vigenere_cipher/Vigenere_cipher/assets/jeruslaem_history_encrypted.txt", "r", encoding="utf-8") as f:
         encrypted_history = f.read()
 
-    decrypted_text = vigenere_decrypt("english", encrypted_history, "cjzcciroa")
+    decrypted_text = vigenere_decrypt("english", encrypted_history, "himmelfarb")
 
     # Write to a new file
     with open("/Users/amichaiblumenfeld/cyber_grade_11/Vigenere_cipher/Vigenere_cipher/assets/jeruslaem_history_decrypted.txt", "w", encoding="utf-8") as f:
