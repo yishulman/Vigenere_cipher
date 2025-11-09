@@ -1,7 +1,12 @@
+from caesar_encrypt import char_shift
 from alphabets import get_alphabet
-from caesar_encrypt import caesar_encrypt
 from cyber_tools import frequency_analysis, plot_frequency, print_crib_analysis
-
+def crib_func():
+    my_file = open(r'C:\Users\user\Documents\firstassignment\Vigenere_cipher\src\assets\jeruslaem_history_encrypted.txt', "r", encoding="utf-8")
+    ciphertext = my_file.read()
+    my_file.close()
+    print_crib_analysis(ciphertext, " Jerusalem ")
+crib_func()
 
 def vigenere_encrypt(lang, text, keyword):
     """
@@ -28,8 +33,14 @@ def vigenere_encrypt(lang, text, keyword):
         return text  # Return original text if keyword has no valid characters
     
     result = ""
-   
-    
+    key_index = 0
+    for char in text:
+        if char.lower() in alphabet:
+            shifts = alphabet.index(clean_keyword[key_index % len(clean_keyword)]) #get shifts amount from key's character
+            result += char_shift(lang, char, shifts)
+            key_index += 1
+        else:
+            result += char  
     return result
 
 
@@ -58,7 +69,14 @@ def vigenere_decrypt(lang, text, keyword):
         return text  # Return original text if keyword has no valid characters
     
     result = ""
-    
+    key_index = 0
+    for char in text:
+        if char.lower() in alphabet:
+            shifts = alphabet.index(clean_keyword[key_index % len(clean_keyword)])
+            result += char_shift(lang, char, -shifts) #negative shifts for decryption
+            key_index += 1
+        else:
+            result += char  
     
     return result
 
@@ -87,6 +105,12 @@ if __name__ == "__main__":
 
     encrypted_heb = vigenere_encrypt("hebrew", hebrew_text, hebrew_keyword)
     print(f"Encrypted: {encrypted_heb}")
-
     decrypted_heb = vigenere_decrypt("hebrew", encrypted_heb, hebrew_keyword)
     print(f"Decrypted: {decrypted_heb}")
+
+def print_decrypted_jerusalem_history():
+    my_file = open(r'C:\Users\user\Documents\firstassignment\Vigenere_cipher\src\assets\jeruslaem_history_encrypted.txt', "r", encoding="utf-8")
+    ciphertext = my_file.read()
+    my_file.close()
+    print(vigenere_decrypt("english", ciphertext, "himmelfarb"))
+print_decrypted_jerusalem_history()
