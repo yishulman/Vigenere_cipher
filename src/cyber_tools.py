@@ -4,6 +4,7 @@ Cybersecurity and cryptanalysis tools for cipher analysis.
 
 from alphabets import get_alphabet
 
+
 def vigenere_crib_search(ciphertext, crib, lang='english'):
     """
     Perform a crib search on Vigenere cipher to find potential key fragments.
@@ -210,36 +211,15 @@ def plot_frequency(lang, text, title="Character Frequency Analysis", ignore_spac
 
 
 
+# List of cribs you want to try
+cribs = [" Jerusalem ", " Israel ", " History "]
 
-from collections import Counter
-import re
-
-# --- Read + clean ciphertext ---
+# Read the ciphertext
 with open("/Users/amichaiblumenfeld/cyber_grade_11/Vigenere_cipher/Vigenere_cipher/assets/jeruslaem_history_encrypted.txt", "r", encoding="utf-8") as f:
-    ciphertext = re.sub(r'[^a-zA-Z ]', '', f.read()).lower()
+    ciphertext = f.read()
 
-# --- Cribs ---
-cribs = ["Jerusalem", "Israel", "second temple", "temple", "David", "Solomon", "Babylon",
-         "exile", "covenant", "prophet", "king", "holy", "mountain", "priest", "sacrifice",
-         "the", "and", "that", "bce", "jewish", "ce", "acd"]
+# Run crib analysis
+for i in cribs:
+    print_crib_analysis(ciphertext, i, lang='english')
+    input("")
 
-# --- Collect all fragments ---
-all_results = [res for crib in cribs for res in vigenere_crib_search(ciphertext, crib.lower(), lang='english')]
-if not all_results: exit("No fragments found from any crib.")
-
-# --- Generate candidate keys & score ---
-words = ['jerusalem','the','israel','temple','david']
-candidate_keys = []
-for key_len in range(4, 17):
-    counters = [Counter() for _ in range(key_len)]
-    for pos, keyfrag, _ in all_results:
-        for j, kch in enumerate(keyfrag):
-            counters[(pos + j) % key_len][kch] += 1
-    key = ''.join(c.most_common(1)[0][0] if c else 'a' for c in counters)
-    score = sum(quick_decrypt_with_key(ciphertext[:2000], key).count(w) for w in words)
-    candidate_keys.append((score, key_len, key))
-
-# --- Display top candidates ---
-for score, klen, key in sorted(candidate_keys, reverse=True)[:10]:
-    sample = quick_decrypt_with_key(ciphertext, key)[:400]
-    print(f"\nscore={score}  len={klen}  key='{key}'\nsample: {sample}\n")
