@@ -25,17 +25,23 @@ def vigenere_encrypt(lang, text, keyword):
 
     result = ""
     keyword_index = 0
+    current_text = ""
+    
+    # Process text character by character
     for char in text:
+        current_text += char
         lower_char = char.lower()
         if lower_char in alphabet:
+            # Get shift from keyword
             key_char = clean_keyword[keyword_index % len(clean_keyword)]
             shift = alphabet.index(key_char)
-            new_pos = (alphabet.index(lower_char) + shift) % len(alphabet)
-            encrypted_char = alphabet[new_pos]
-            result += encrypted_char.upper() if char.isupper() else encrypted_char
+            # Apply Caesar encryption for this character
+            encrypted = caesar_encrypt(lang, char, shift)
+            result += encrypted
             keyword_index += 1
         else:
             result += char  # keep punctuation and symbols unchanged
+    
     return result
 
 
@@ -62,17 +68,23 @@ def vigenere_decrypt(lang, text, keyword):
 
     result = ""
     keyword_index = 0
+    current_text = ""
+    
+    # Process text character by character
     for char in text:
+        current_text += char
         lower_char = char.lower()
         if lower_char in alphabet:
+            # Get shift from keyword
             key_char = clean_keyword[keyword_index % len(clean_keyword)]
             shift = alphabet.index(key_char)
-            new_pos = (alphabet.index(lower_char) - shift) % len(alphabet)
-            decrypted_char = alphabet[new_pos]
-            result += decrypted_char.upper() if char.isupper() else decrypted_char
+            # Apply Caesar encryption with negative shift for decryption
+            decrypted = caesar_encrypt(lang, char, -shift)
+            result += decrypted
             keyword_index += 1
         else:
             result += char
+    
     return result
 
 

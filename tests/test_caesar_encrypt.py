@@ -109,7 +109,8 @@ class TestFrequencyAnalysis:
 
     def test_en_bible_frequency(self):
         """Test frequency analysis on a sample of the English Bible text."""
-        with open('./assets/bible_en.txt', 'r', encoding='utf-8') as file:
+        file_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'bible_en.txt')
+        with open(file_path, 'r', encoding='utf-8') as file:
             original_text = file.read()
         result = frequency_analysis("english", original_text)
         expected = {char: 0 for char in english_alphabet}
@@ -118,7 +119,8 @@ class TestFrequencyAnalysis:
     
     def test_he_bible_frequency(self):
         """Test frequency analysis on a sample of the Hebrew Bible text."""
-        with open('./assets/bible_he.txt', 'r', encoding='utf-8') as file:
+        file_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'bible_he.txt')
+        with open(file_path, 'r', encoding='utf-8') as file:
             original_text = file.read()
         result = frequency_analysis("hebrew", original_text)
         expected = {char: 0 for char in hebrew_alphabet}
