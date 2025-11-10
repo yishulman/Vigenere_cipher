@@ -2,17 +2,33 @@ from alphabets import get_alphabet
 from cyber_tools import frequency_analysis, plot_frequency
 
 
-
 def caesar_encrypt(lang, text, shift):
     alphabet = get_alphabet(lang)
     if alphabet is None:
         return text  # Return original text if language not supported
 
     result = ""
-   
+    for char in text:
+        # Store original case
+        is_upper = char.isupper()
+        # Work with lowercase version for consistency
+        char_lower = char.lower()
+        
+        # If character is in alphabet, shift it
+        if char_lower in alphabet:
+            # Get the position of char in alphabet
+            current_pos = alphabet.index(char_lower)
+            # Calculate new position after shift
+            new_pos = (current_pos + shift) % len(alphabet)
+            # Get the shifted character
+            shifted_char = alphabet[new_pos]
+            # Restore original case
+            result += shifted_char.upper() if is_upper else shifted_char
+        else:
+            # If character is not in alphabet, keep it unchanged
+            result += char
+            
     return result
-
-
 
 
 

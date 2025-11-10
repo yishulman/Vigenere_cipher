@@ -16,21 +16,34 @@ def vigenere_encrypt(lang, text, keyword):
         str: Encrypted text
     """
     alphabet = get_alphabet(lang)
-    if alphabet is None:
-        return text  # Return original text if language not supported
-    
-    if not keyword:
-        return text  # Return original text if no keyword provided
-    
-    # Clean the keyword to only include valid alphabet characters
-    clean_keyword = ''.join([char.lower() for char in keyword if char.lower() in alphabet])
+    if alphabet is None or not keyword:
+        return text
+
+    clean_keyword = ''.join([c.lower() for c in keyword if c.lower() in alphabet])
     if not clean_keyword:
-        return text  # Return original text if keyword has no valid characters
-    
+        return text
+
     result = ""
-   
+    keyword_index = 0
+    current_text = ""
+    
+    # Process text character by character
+    for char in text:
+        current_text += char
+        lower_char = char.lower()
+        if lower_char in alphabet:
+            # Get shift from keyword
+            key_char = clean_keyword[keyword_index % len(clean_keyword)]
+            shift = alphabet.index(key_char)
+            # Apply Caesar encryption for this character
+            encrypted = caesar_encrypt(lang, char, shift)
+            result += encrypted
+            keyword_index += 1
+        else:
+            result += char  # keep punctuation and symbols unchanged
     
     return result
+
 
 
 def vigenere_decrypt(lang, text, keyword):
@@ -46,21 +59,34 @@ def vigenere_decrypt(lang, text, keyword):
         str: Decrypted text
     """
     alphabet = get_alphabet(lang)
-    if alphabet is None:
-        return text  # Return original text if language not supported
-    
-    if not keyword:
-        return text  # Return original text if no keyword provided
-    
-    # Clean the keyword to only include valid alphabet characters
-    clean_keyword = ''.join([char.lower() for char in keyword if char.lower() in alphabet])
+    if alphabet is None or not keyword:
+        return text
+
+    clean_keyword = ''.join([c.lower() for c in keyword if c.lower() in alphabet])
     if not clean_keyword:
-        return text  # Return original text if keyword has no valid characters
-    
+        return text
+
     result = ""
+    keyword_index = 0
+    current_text = ""
     
+    # Process text character by character
+    for char in text:
+        current_text += char
+        lower_char = char.lower()
+        if lower_char in alphabet:
+            # Get shift from keyword
+            key_char = clean_keyword[keyword_index % len(clean_keyword)]
+            shift = alphabet.index(key_char)
+            # Apply Caesar encryption with negative shift for decryption
+            decrypted = caesar_encrypt(lang, char, -shift)
+            result += decrypted
+            keyword_index += 1
+        else:
+            result += char
     
     return result
+
 
 if __name__ == "__main__":
     # Simple example of Vigenere cipher usage
@@ -90,3 +116,12 @@ if __name__ == "__main__":
 
     decrypted_heb = vigenere_decrypt("hebrew", encrypted_heb, hebrew_keyword)
     print(f"Decrypted: {decrypted_heb}")
+
+    with open("/Users/amichaiblumenfeld/cyber_grade_11/Vigenere_cipher/Vigenere_cipher/assets/jeruslaem_history_encrypted.txt", "r", encoding="utf-8") as f:
+        encrypted_history = f.read()
+
+    decrypted_text = vigenere_decrypt("english", encrypted_history, "himmelfarb")
+
+    # Write to a new file
+    with open("/Users/amichaiblumenfeld/cyber_grade_11/Vigenere_cipher/Vigenere_cipher/assets/jeruslaem_history_decrypted.txt", "w", encoding="utf-8") as f:
+        f.write(decrypted_text)
